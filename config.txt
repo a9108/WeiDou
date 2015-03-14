@@ -1,0 +1,5 @@
+RawDataDir	D:\cxz\rawdata\
+DataDir		D:\cxz\data\
+SelectDir	D:\cxz\data\select\
+TrainDir	D:\cxz\data\train\
+TestDir	D:\cxz\data\test\
