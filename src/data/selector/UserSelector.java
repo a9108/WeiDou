@@ -62,6 +62,8 @@ public class UserSelector {
 			}
 			System.out.println("Current User Count : "+user.size());
 		}
+		{
+		}
 		
 		LinkedList<String> outdata=new LinkedList<String>();
 		for (int i=0;i<user.size();i++)

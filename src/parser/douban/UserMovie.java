@@ -25,7 +25,7 @@ public class UserMovie {
 
 	public static void main(String[] args) {
 		Config.load("config.txt");
-		String dir = Config.getValue("RawDataDir") + "douban/userwatched/";
+		final String dir = Config.getValue("RawDataDir") + "douban/userwatched/";
 		Douban douban = new Douban();
 		douban.loadUser();
 		for (DoubanUser user : douban.users)
@@ -38,7 +38,7 @@ public class UserMovie {
 				public void run() {
 					for (;;) {
 						String curid = "";
-						synchronized (workers) {
+						synchronized (Q) {
 							if (Q.size() == 0)
 								break;
 							curid = Q.getFirst();

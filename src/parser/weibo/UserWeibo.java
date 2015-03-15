@@ -14,7 +14,7 @@ public class UserWeibo {
 	private LinkedList<String> outdata = new LinkedList<String>();
 	private LinkedList<String> uids=new LinkedList<String>();
 	public void run() {
-		String dir = Config.getValue("RawDataDir") + "weibo\\user\\";
+		final String dir = Config.getValue("RawDataDir") + "weibo\\user\\";
 		
 		for (String uid : (new File(dir)).list())
 			Q.add(uid);
