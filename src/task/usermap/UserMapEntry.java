@@ -10,7 +10,7 @@ public class UserMapEntry {
 		UserMapTask.data.load(Config.getValue("SelectDir"));
 		UserMapTask.data.genTrain(0.3);
 		
-		UserMapTask task=new ExactMatch();
+		UserMapTask task=new EditDistance();
 		task.run();
 		task.evaluate();
 	}
