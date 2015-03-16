@@ -6,8 +6,8 @@ import java.util.LinkedList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import BasicOps.Config;
-import BasicOps.FileOps;
+import basic.Config;
+import basic.FileOps;
 
 public class Friends {
 	public static void main(String[] args) {

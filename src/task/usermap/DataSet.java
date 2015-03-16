@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Random;
 
-import BasicOps.FileOps;
+import basic.FileOps;
 
 public class DataSet {
 	private LinkedList<Long> weibo_user;
@@ -51,6 +51,14 @@ public class DataSet {
 	public LinkedList<Integer[]> getDouban_usermovie(int i) {
 		return douban_usermovie.get(i);
 	}
+	
+	public LinkedList<Integer> getDouban_friends(int i){
+		return douban_friend.get(i);
+	}
+
+	public LinkedList<Integer> getWeibo_friends(int i){
+		return weibo_friend.get(i);
+	}
 
 	public void load(String dir) {
 		// Load Douban
@@ -79,14 +87,14 @@ public class DataSet {
 //				douban_friend.get(uidb).add(uida);
 //			}
 //			System.out.println("Douban Friends Loaded");
-//			for (String line : FileOps.LoadFilebyLine(dir
-//					+ "douban_userwatched")) {
-//				String[] sep = line.split("\t");
-//				douban_usermovie.get(douban_rid.get(Long.valueOf(sep[0]))).add(
-//						new Integer[] { Integer.valueOf(sep[1]),
-//								Integer.valueOf(sep[2]) });
-//			}
-//			System.out.println("Douban Movie Loaded");
+			for (String line : FileOps.LoadFilebyLine(dir
+					+ "douban_userwatched")) {
+				String[] sep = line.split("\t");
+				douban_usermovie.get(douban_rid.get(Long.valueOf(sep[0]))).add(
+						new Integer[] { Integer.valueOf(sep[1]),
+								Integer.valueOf(sep[2]) });
+			}
+			System.out.println("Douban Movie Loaded");
 		}
 		// Load Weibo
 		{
@@ -114,12 +122,13 @@ public class DataSet {
 //				weibo_friend.get(uidb).add(uida);
 //			}
 //			System.out.println("Weibo Friends Loaded");
-//			for (String line : FileOps.LoadFilebyLine(dir + "weibo_weibo")) {
-//				String[] sep = line.split("\t");
-//				weibo_weibo.get(weibo_rid.get(Long.valueOf(sep[0])))
-//						.add(sep[1]);
-//			}
-//			System.out.println("Weibo Weibo Loaded");
+			for (String line : FileOps.LoadFilebyLine(dir + "weibo_weibo")) {
+				if (!line.contains(":")) continue;
+				int pos=line.indexOf(":");
+				weibo_weibo.get(weibo_rid.get(Long.valueOf(line.substring(0, pos))))
+						.add(line.substring(pos+1));
+			}
+			System.out.println("Weibo Weibo Loaded");
 		}
 		// Load Truth
 		{
@@ -136,7 +145,7 @@ public class DataSet {
 
 	public void genTrain(double ratio) {
 		train = new HashMap<Integer, Integer>();
-		Random random = new Random();
+		Random random = new Random(0);
 		for (Integer uid : truth.keySet())
 			if (random.nextDouble() < ratio)
 				train.put(uid, truth.get(uid));

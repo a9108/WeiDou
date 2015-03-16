@@ -4,7 +4,7 @@ import java.util.LinkedList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import BasicOps.StringOps;
+import basic.StringOps;
 
 public class MovieLog {
 	public String uid;

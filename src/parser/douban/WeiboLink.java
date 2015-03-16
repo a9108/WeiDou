@@ -3,9 +3,9 @@ package parser.douban;
 import java.util.HashMap;
 import java.util.LinkedList;
 
+import basic.Config;
+import basic.FileOps;
 import data.Weibo;
-import BasicOps.Config;
-import BasicOps.FileOps;
 import DBConnector.DoubanDB;
 import DBConnector.WeiboDB;
 

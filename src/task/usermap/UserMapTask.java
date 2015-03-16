@@ -3,7 +3,7 @@ package task.usermap;
 import java.util.HashMap;
 import java.util.HashSet;
 
-import BasicOps.Config;
+import basic.Config;
 
 public abstract class UserMapTask {
 	public static DataSet data;

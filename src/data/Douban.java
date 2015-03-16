@@ -6,8 +6,8 @@ import java.io.FileReader;
 import java.util.HashMap;
 import java.util.LinkedList;
 
-import BasicOps.Config;
-import BasicOps.FileOps;
+import basic.Config;
+import basic.FileOps;
 
 public class Douban {
 

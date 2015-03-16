@@ -7,11 +7,11 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedList;
 
+import basic.Config;
+import basic.FileOps;
 import data.Douban;
 import data.DoubanUser;
 import data.MovieLog;
-import BasicOps.Config;
-import BasicOps.FileOps;
 
 public class MovieSelector {
 	public static void main(String[] args) {

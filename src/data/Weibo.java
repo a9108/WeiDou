@@ -10,9 +10,9 @@ import java.util.LinkedList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import basic.Config;
+import basic.FileOps;
 import Tasks.WeiboUser;
-import BasicOps.Config;
-import BasicOps.FileOps;
 
 public class Weibo {
 	public LinkedList<String> users;

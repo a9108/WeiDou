@@ -8,9 +8,9 @@ import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.LinkedList;
 
+import basic.Config;
+import basic.FileOps;
 import data.MovieLog;
-import BasicOps.Config;
-import BasicOps.FileOps;
 
 public class MovieSpilitor {
 	public static void main(String[] args) {

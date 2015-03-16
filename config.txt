@@ -1,6 +1,10 @@
 #Thread		10
 RawDataDir	D:\cxz\rawdata\
 DataDir		D:\cxz\data\
+
 SelectDir	D:\cxz\data\select\
+SelectDir	D:\cxz\data\small\
+WorkDir		D:\cxz\data\work\
+
 TrainDir	D:\cxz\data\train\
 TestDir	D:\cxz\data\test\

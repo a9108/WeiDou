@@ -5,9 +5,9 @@ import java.util.LinkedList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import BasicOps.Config;
-import BasicOps.FileOps;
-import BasicOps.StringOps;
+import basic.Config;
+import basic.FileOps;
+import basic.StringOps;
 
 public class UserWeibo {
 	private LinkedList<String> Q = new LinkedList<String>();

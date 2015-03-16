@@ -9,12 +9,12 @@ import java.util.LinkedList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import basic.Config;
+import basic.FileOps;
 import Util.NetworkConnect;
 import data.Douban;
 import data.DoubanUser;
 import data.MovieLog;
-import BasicOps.Config;
-import BasicOps.FileOps;
 import Crawler.Client;
 import Crawler.ProxyBank;
 

@@ -3,11 +3,11 @@ package data.selector;
 import java.util.HashMap;
 import java.util.LinkedList;
 
+import basic.Config;
+import basic.FileOps;
 import data.Douban;
 import data.DoubanUser;
 import data.MovieLog;
-import BasicOps.Config;
-import BasicOps.FileOps;
 
 public class DoubanSelector {
 	public static void main(String[] args) {

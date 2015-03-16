@@ -3,7 +3,7 @@ package task.usermap;
 import java.util.HashMap;
 import java.util.LinkedList;
 
-import BasicOps.Config;
+import basic.Config;
 
 public class ExactMatch extends UserMapTask {
 	
@@ -29,7 +29,6 @@ public class ExactMatch extends UserMapTask {
 							if (Q.isEmpty()) return;
 							i=Q.removeFirst();
 						}
-						System.out.println(i);
 						for (int j = 0; j < data.getSizeWeibo(); j++)
 							if (data.getDouban_username(i)
 									.equals(data.getWeibo_username(j))){

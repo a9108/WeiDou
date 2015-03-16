@@ -3,10 +3,10 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.LinkedList;
 
+import basic.Config;
+import basic.FileOps;
 import data.Douban;
 import data.Weibo;
-import BasicOps.Config;
-import BasicOps.FileOps;
 
 
 public class UserSelector {

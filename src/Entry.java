@@ -2,8 +2,9 @@ import java.io.File;
 import java.nio.charset.Charset;
  
 
-import BasicOps.Config;
-import BasicOps.FileOps;
+
+import basic.Config;
+import basic.FileOps;
    
 public class Entry {
 	public static void main(String[] args) {

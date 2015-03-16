@@ -1,16 +1,22 @@
 package task.usermap;
 
-import BasicOps.Config;
+import java.io.PrintStream;
+import java.io.UnsupportedEncodingException;
+import java.util.List;
+import java.util.Properties;
+
+import basic.Config;
 
 public class UserMapEntry {
 	
-	public static void main(String[] args) {
+	private static final String basedir = System.getProperty("SegDemo", "data");
+	public static void main(String[] args) throws Exception {
 		Config.load("config.txt");
 		UserMapTask.data=new DataSet();
 		UserMapTask.data.load(Config.getValue("SelectDir"));
 		UserMapTask.data.genTrain(0.3);
 		
-		UserMapTask task=new EditDistance();
+		UserMapTask task=new JUM();
 		task.run();
 		task.evaluate();
 	}
