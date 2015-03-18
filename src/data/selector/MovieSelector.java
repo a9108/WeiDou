@@ -18,28 +18,26 @@ public class MovieSelector {
 		Config.load("config.txt");
 
 		HashMap<Integer, Integer> moviecnt = new HashMap<Integer, Integer>();
-		
-		try {
-			int cnt = 0;
-			BufferedReader fin = new BufferedReader(new FileReader(
-					Config.getValue("DataDir") + "douban_usermovie"));
-			for (;;) {
-				cnt++;
-				if (cnt % 10000 == 0)
-					System.out.println("Loading Movie # : " + cnt);
-				String s = fin.readLine();
-				if (s == null)
-					break;
+		HashMap<Integer, String> movieName = new HashMap<Integer, String>();
+
+		LinkedList<String> Q = new LinkedList<String>();
+		for (String line : FileOps.LoadFilebyLine(Config.getValue("SelectDir")
+				+ "users"))
+			Q.add(line.split("\t")[1]);
+
+		int cnt = 0;
+		for (String uid : Q) {
+			System.out.println("Loading " + (++cnt));
+			for (String s : FileOps.LoadFilebyLine(Config.getValue("DataDir")
+					+ "douban_usermovie\\" + uid)) {
 				MovieLog cur = new MovieLog(s);
+				movieName.put(cur.mid, cur.name);
 				int mid = cur.mid;
 				if (moviecnt.containsKey(mid))
 					moviecnt.put(mid, moviecnt.get(mid) + 1);
 				else
 					moviecnt.put(mid, 1);
 			}
-			fin.close();
-		} catch (Exception ex) {
-			ex.printStackTrace();
 		}
 		LinkedList<Integer[]> movies = new LinkedList<Integer[]>();
 		for (int mid : moviecnt.keySet())
@@ -50,10 +48,12 @@ public class MovieSelector {
 			};
 		});
 
-		LinkedList<String> outdata=new LinkedList<String>();
-		for (int i = 0; i < movies.size(); i++)
-			outdata.add(i+"\t"+movies.get(i)[0] + "\t" + movies.get(i)[1]);
-		
-		FileOps.SaveFile(Config.getValue("SelectDir")+"douban_movie", outdata);
+		LinkedList<String> outdata = new LinkedList<String>();
+		for (int i = 0; i < movies.size() && i < 1000; i++)
+			outdata.add(i + "\t" + movies.get(i)[0] + "\t"
+					+ movieName.get(movies.get(i)[0]) + "\t" + movies.get(i)[1]);
+
+		FileOps.SaveFile(Config.getValue("SelectDir") + "douban_movie",
+				outdata);
 	}
 }

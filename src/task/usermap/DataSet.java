@@ -1,13 +1,17 @@
 package task.usermap;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Random;
 
+import basic.Config;
 import basic.FileOps;
 
 public class DataSet {
+	private int NMovie;
+	private ArrayList<String> moviename;
 	private LinkedList<Long> weibo_user;
 	private LinkedList<String> weibo_username;
 	private LinkedList<LinkedList<String>> weibo_weibo;
@@ -18,16 +22,20 @@ public class DataSet {
 	private LinkedList<LinkedList<Integer[]>> douban_usermovie;
 	private LinkedList<LinkedList<Integer>> douban_friend;
 	private HashMap<Long, Integer> douban_rid;
-	private HashMap<Integer,Integer> truth, train;
+	private HashMap<Integer, Integer> truth, train;
 
-	public int getSizeDouban(){
+	public int getSizeMovie() {
+		return NMovie;
+	}
+
+	public int getSizeDouban() {
 		return douban_user.size();
 	}
-	
-	public int getSizeWeibo(){
+
+	public int getSizeWeibo() {
 		return weibo_user.size();
 	}
-	
+
 	public HashMap<Integer, Integer> getTruth() {
 		return truth;
 	}
@@ -51,13 +59,16 @@ public class DataSet {
 	public LinkedList<Integer[]> getDouban_usermovie(int i) {
 		return douban_usermovie.get(i);
 	}
-	
-	public LinkedList<Integer> getDouban_friends(int i){
+
+	public LinkedList<Integer> getDouban_friends(int i) {
 		return douban_friend.get(i);
 	}
 
-	public LinkedList<Integer> getWeibo_friends(int i){
+	public LinkedList<Integer> getWeibo_friends(int i) {
 		return weibo_friend.get(i);
+	}
+	public String getMovieName(int i){
+		return moviename.get(i);
 	}
 
 	public void load(String dir) {
@@ -79,14 +90,23 @@ public class DataSet {
 				douban_usermovie.add(new LinkedList<Integer[]>());
 			}
 			System.out.println("Douban User Loaded");
-//			for (String line : FileOps.LoadFilebyLine(dir + "douban_friend")) {
-//				String[] sep = line.split("\t");
-//				int uida = douban_rid.get(Long.valueOf(sep[0]));
-//				int uidb = douban_rid.get(Long.valueOf(sep[1]));
-//				douban_friend.get(uida).add(uidb);
-//				douban_friend.get(uidb).add(uida);
-//			}
-//			System.out.println("Douban Friends Loaded");
+			 for (String line : FileOps.LoadFilebyLine(dir + "douban_friend"))
+			 {
+			 String[] sep = line.split("\t");
+			 int uida = douban_rid.get(Long.valueOf(sep[0]));
+			 int uidb = douban_rid.get(Long.valueOf(sep[1]));
+			 douban_friend.get(uida).add(uidb);
+			 douban_friend.get(uidb).add(uida);
+			 }
+			 System.out.println("Douban Friends Loaded");
+			
+			NMovie=0;
+			moviename=new ArrayList<String>();
+			for (String line:FileOps.LoadFilebyLine(dir+"douban_movie")){
+				moviename.add(line.split("\t")[2]);
+				NMovie++;
+			}
+			
 			for (String line : FileOps.LoadFilebyLine(dir
 					+ "douban_userwatched")) {
 				String[] sep = line.split("\t");
@@ -114,19 +134,22 @@ public class DataSet {
 				weibo_weibo.add(new LinkedList<String>());
 			}
 			System.out.println("Weibo User Loaded");
-//			for (String line : FileOps.LoadFilebyLine(dir + "weibo_friend")) {
-//				String[] sep = line.split("\t");
-//				int uida = weibo_rid.get(Long.valueOf(sep[0]));
-//				int uidb = weibo_rid.get(Long.valueOf(sep[1]));
-//				weibo_friend.get(uida).add(uidb);
-//				weibo_friend.get(uidb).add(uida);
-//			}
-//			System.out.println("Weibo Friends Loaded");
+			 for (String line : FileOps.LoadFilebyLine(dir + "weibo_friend"))
+			 {
+			 String[] sep = line.split("\t");
+			 int uida = weibo_rid.get(Long.valueOf(sep[0]));
+			 int uidb = weibo_rid.get(Long.valueOf(sep[1]));
+			 weibo_friend.get(uida).add(uidb);
+			 weibo_friend.get(uidb).add(uida);
+			 }
+			 System.out.println("Weibo Friends Loaded");
 			for (String line : FileOps.LoadFilebyLine(dir + "weibo_weibo")) {
-				if (!line.contains(":")) continue;
-				int pos=line.indexOf(":");
-				weibo_weibo.get(weibo_rid.get(Long.valueOf(line.substring(0, pos))))
-						.add(line.substring(pos+1));
+				if (!line.contains(":"))
+					continue;
+				int pos = line.indexOf(":");
+				weibo_weibo.get(
+						weibo_rid.get(Long.valueOf(line.substring(0, pos))))
+						.add(line.substring(pos + 1));
 			}
 			System.out.println("Weibo Weibo Loaded");
 		}
@@ -136,7 +159,8 @@ public class DataSet {
 			LinkedList<String> lines = FileOps.LoadFilebyLine(dir + "users");
 			for (String line : lines) {
 				String[] sep = line.split("\t");
-				truth.put(douban_rid.get(Long.valueOf(sep[1])), weibo_rid.get(Long.valueOf(sep[2])));
+				truth.put(douban_rid.get(Long.valueOf(sep[1])),
+						weibo_rid.get(Long.valueOf(sep[2])));
 			}
 			System.out.println("Ground Truth Loaded");
 		}
@@ -147,7 +171,8 @@ public class DataSet {
 		train = new HashMap<Integer, Integer>();
 		Random random = new Random(0);
 		for (Integer uid : truth.keySet())
-			if (random.nextDouble() < ratio)
+			if (random.nextDouble() < ratio){
 				train.put(uid, truth.get(uid));
+			}
 	}
 }

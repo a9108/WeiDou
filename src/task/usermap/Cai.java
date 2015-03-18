@@ -87,18 +87,18 @@ public class Cai extends UserMapTask {
 			for (int j : data.getDouban_friends(i))
 				if (i < j){
 					pairs.add(new Integer[] { did.get(i), did.get(j) });
-//					pairs.add(new Integer[] { wid.get(data.getTruth().get(i)), wid.get(data.getTruth().get(j)) });
+					pairs.add(new Integer[] { wid.get(data.getTruth().get(i)), wid.get(data.getTruth().get(j)) });
 				}
-		for (int i = 0; i < data.getSizeWeibo(); i++) {
-			for (int j : data.getWeibo_friends(i))
-				if (i < j)
-					pairs.add(new Integer[] { wid.get(i), wid.get(j) });
-		}
+//		for (int i = 0; i < data.getSizeWeibo(); i++) {
+//			for (int j : data.getWeibo_friends(i))
+//				if (i < j)
+//					pairs.add(new Integer[] { wid.get(i), wid.get(j) });
+//		}
 		System.out.println("Pairs Generated : " + pairs.size());
 
 		double lacost = getCost();
 		System.out.println("Initial Cost : " + lacost);
-		for (int i = 0; i < 20 && rate > 1e-8; i++) {
+		for (int i = 0; i < 100 && rate > 1e-8; i++) {
 			learn();
 			double cost = getCost();
 			if (cost < lacost)
@@ -115,6 +115,18 @@ public class Cai extends UserMapTask {
 			lacost = cost;
 		}
 
+		
+	};
+
+	public double getScore(int i, int j) {
+		i = did.get(i);
+		j = wid.get(j);
+		// return basic.Functions.sigmoid(basic.Vector.dot(embed[i], embed[j]));
+		return basic.Vector.CosineSimilarity(embed[i], embed[j]);
+	}
+
+	@Override
+	public void evaluate() {
 		cands = new ArrayList<ArrayList<Pair<Integer, Double>>>();
 		result = new HashMap<Integer, Integer>();
 
@@ -206,17 +218,7 @@ public class Cai extends UserMapTask {
 			} catch (Exception e) {
 			}
 
-	};
-
-	private double getScore(int i, int j) {
-		i = did.get(i);
-		j = wid.get(j);
-		// return basic.Functions.sigmoid(basic.Vector.dot(embed[i], embed[j]));
-		return basic.Vector.CosineSimilarity(embed[i], embed[j]);
-	}
-
-	@Override
-	public void evaluate() {
+		
 		for (int i = 1; i <= TOPN; i++) {
 			int tcnt = 0, hit = 0;
 			for (int j = 0; j < data.getSizeDouban(); j++)

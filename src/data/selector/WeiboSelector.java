@@ -13,9 +13,9 @@ import data.MovieLog;
 import data.Weibo;
 
 public class WeiboSelector {
-	static NLP.ChineseParser parser;
+	static nlp.ChineseParser parser;
 	public static void main(String[] args) {
-		parser = new NLP.ChineseParser();
+		parser = new nlp.ChineseParser();
 		parser.init("D:\\cxz\\Workspace\\seg\\data");
 		Config.load("config.txt");
 		Weibo weibo = new Weibo();

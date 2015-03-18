@@ -6,17 +6,18 @@ import java.util.List;
 import java.util.Properties;
 
 import basic.Config;
+import basic.SystemOps;
 
 public class UserMapEntry {
 	
-	private static final String basedir = System.getProperty("SegDemo", "data");
 	public static void main(String[] args) throws Exception {
+		
 		Config.load("config.txt");
 		UserMapTask.data=new DataSet();
 		UserMapTask.data.load(Config.getValue("SelectDir"));
 		UserMapTask.data.genTrain(0.3);
 		
-		UserMapTask task=new JUM();
+		UserMapTask task=new SVMWrapper();
 		task.run();
 		task.evaluate();
 	}

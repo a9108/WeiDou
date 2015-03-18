@@ -22,7 +22,7 @@ public class UserMovie {
 	public static LinkedList<String> Q = new LinkedList<String>();
 	public static int cnt;
 	private static HashMap<Integer, Integer> moviecnt = new HashMap<Integer, Integer>();
-
+	private static HashMap<Integer, String> movieName = new HashMap<Integer, String>();
 	public static void main(String[] args) {
 		Config.load("config.txt");
 		final String dir = Config.getValue("RawDataDir") + "douban/userwatched/";
@@ -73,6 +73,7 @@ public class UserMovie {
 									.matcher(content);
 							for (; matcher.find();) {
 								MovieLog cur = new MovieLog();
+								movieName.put(cur.mid, cur.name);
 								if (cur.parse(curid, matcher.group(1))) {
 									outdata.add(cur.toString());
 									curcnt++;
@@ -112,7 +113,8 @@ public class UserMovie {
 
 		LinkedList<String> outdata = new LinkedList<String>();
 		for (int i = 0; i < movies.size(); i++)
-			outdata.add(i + "\t" + movies.get(i)[0] + "\t" + movies.get(i)[1]);
+			outdata.add(i + "\t" + movies.get(i)[0] + "\t"
+					+ movieName.get(movies.get(i)[0]) + "\t" + movies.get(i)[1]);
 
 		FileOps.SaveFile(Config.getValue("DataDir") + "douban_movie", outdata);
 
