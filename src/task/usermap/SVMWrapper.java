@@ -54,7 +54,7 @@ public class SVMWrapper extends UserMapTask {
 	private Classification model;
 
 	private void Train() {
-		model = new WinSVM("D:\\cxz\\tools\\svm\\", "-b 1 -t 3","-b 1");
+		model = new WinSVM("D:\\cxz\\tools\\svm\\", "-b 1 -t 3","-b 1 -q");
 		model.setNFeature(NFeature);
 		for (int id : data.getTruth().keySet()) {
 			model.addTrain(genFeature(id, data.getTruth().get(id), 1));
@@ -127,6 +127,6 @@ public class SVMWrapper extends UserMapTask {
 		random = new Random();
 		prepareModels();
 		Train();
-//		Predict();
+		Predict();
 	}
 }
