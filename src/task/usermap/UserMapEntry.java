@@ -17,7 +17,7 @@ public class UserMapEntry {
 		UserMapTask.data.load(Config.getValue("SelectDir"));
 		UserMapTask.data.genTrain(0.3);
 		
-		UserMapTask task=new RFWrapper();
+		UserMapTask task=new JUM();
 		task.run();
 		task.evaluate();
 	}

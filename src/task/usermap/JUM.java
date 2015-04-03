@@ -1,17 +1,11 @@
 package task.usermap;
 
-import java.awt.Frame;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Random;
-
-import javax.swing.text.DefaultEditorKit.InsertBreakAction;
-import javax.swing.text.StyledEditorKit.ForegroundAction;
 
 import basic.Config;
 import basic.DataOps;
@@ -22,7 +16,7 @@ public class JUM extends UserMapTask {
 	private static int TOPN = 100;
 	private ArrayList<ArrayList<Pair<Integer, Double>>> cands;
 
-	private static int NTopic = 10;
+	private static int NTopic = 20;
 	private static int NWords = 1000;
 	private static int NMovie;
 
@@ -133,10 +127,10 @@ public class JUM extends UserMapTask {
 
 		for (int i : data.getTruth().keySet())
 			insertUser(i, data.getTruth().get(i));
-		for (int i = 0; i < data.getSizeDouban(); i++)
-			insertUser(i, -1);
-		for (int i = 0; i < data.getSizeWeibo(); i++)
-			insertUser(-1, i);
+		// for (int i = 0; i < data.getSizeDouban(); i++)
+		// insertUser(i, -1);
+		// for (int i = 0; i < data.getSizeWeibo(); i++)
+		// insertUser(-1, i);
 		System.out.println("Parameters Initialized");
 	}
 
@@ -144,25 +138,31 @@ public class JUM extends UserMapTask {
 	public void run() {
 		initParams();
 
-		for (int itr = 0; itr < 5000; itr++) {
+		for (int itr = 0; itr < 100; itr++) {
 			System.out.println("Iteration # " + itr);
 			updatePhi();
 			updatePhi_M();
 			updateTheta();
 			updateZ();
 			updateZ_M();
-			savePhi();
-			if (itr % 10 == 0)
-				evaluate();
+			if (itr % 10 == 0) {
+				// evaluate();
+				savePhi();
+				saveTheta();
+			}
 		}
-		LinkedList<String> jum=new LinkedList<String>();
-		for (int i=0;i<data.getSizeDouban();i++){
-			StringBuilder sb=new StringBuilder();
-			for (int j=0;j<data.getSizeWeibo();j++)
-				sb.append(getScore(i, j)+"\t");
-			jum.add(sb.toString());
-		}
-		FileOps.SaveFile(Config.getValue("WorkDir")+"jum.model", jum);
+
+		savePhi();
+		saveTheta();
+
+//		LinkedList<String> jum = new LinkedList<String>();
+//		for (int i = 0; i < data.getSizeDouban(); i++) {
+//			StringBuilder sb = new StringBuilder();
+//			for (int j = 0; j < data.getSizeWeibo(); j++)
+//				sb.append(getScore(i, j) + "\t");
+//			jum.add(sb.toString());
+//		}
+//		FileOps.SaveFile(Config.getValue("WorkDir") + "jum.model", jum);
 	}
 
 	private void updatePhi() {
@@ -334,8 +334,20 @@ public class JUM extends UserMapTask {
 			}
 	}
 
+	private void saveTheta() {
+		LinkedList<String> outdata = new LinkedList<String>();
+		for (ArrayList<Double> cur : theta) {
+			StringBuilder sb = new StringBuilder();
+			for (Double v : cur)
+				sb.append(v + "\t");
+			outdata.add(sb.toString());
+		}
+		FileOps.SaveFile(Config.getValue("WorkDir") + "jum.theta", outdata);
+	}
+
 	private void savePhi() {
 		LinkedList<String> outdata = new LinkedList<String>();
+		LinkedList<String> fulldata = new LinkedList<String>();
 		for (int ti = 0; ti < NTopic; ti++) {
 			outdata.add("Topic # " + ti + ":");
 			ArrayList<Double> phi_i = phi.get(ti);
@@ -352,8 +364,12 @@ public class JUM extends UserMapTask {
 			StringBuilder sb = new StringBuilder();
 			for (int q = 0; q < 100; q++)
 				sb.append(tmp.get(q).getFirst() + "\t");
+			StringBuilder sbf = new StringBuilder();
+			for (Pair<String, Double> word : tmp)
+				sbf.append(word.getFirst() + ":" + word.getSecond() + "\t");
 			outdata.add(sb.toString());
-			phi_i = phi.get(ti);
+			fulldata.add(sbf.toString());
+			phi_i = phi_M.get(ti);
 			tmp = new LinkedList<Pair<String, Double>>();
 			for (int i = 0; i < NMovie; i++)
 				tmp.add(new Pair<String, Double>(words_M.get(i), phi_i.get(i)));
@@ -365,15 +381,53 @@ public class JUM extends UserMapTask {
 				}
 			});
 			sb = new StringBuilder();
+			sbf = new StringBuilder();
 			for (int q = 0; q < 100; q++)
 				sb.append(tmp.get(q).getFirst() + "\t");
+			for (Pair<String, Double> word : tmp)
+				sbf.append(word.getFirst() + ":" + word.getSecond() + "\t");
 			outdata.add(sb.toString());
+			fulldata.add(sbf.toString());
+
 		}
-		FileOps.SaveFile(Config.getValue("WorkDir") + "topic_phi", outdata);
+		FileOps.SaveFile(Config.getValue("WorkDir") + "jum.topic_phi", outdata);
+		FileOps.SaveFile(Config.getValue("WorkDir") + "jum.topic_phi.full",
+				fulldata);
 	}
 
 	private double getSimilarity(int i, int j) {
-		return basic.Vector.dot(theta.get(i), theta.get(j));
+		ArrayList<Double> ctheta;
+		ArrayList<Integer> cw = w.get(j);
+		ArrayList<Integer> cw_M = w_M.get(i);
+		ArrayList<Integer> cz = z.get(j);
+		ArrayList<Integer> cz_M = z_M.get(i);
+		double res = 0;
+		for (int q = 0; q < 1; q++) {
+			res = 0;
+			ctheta = new ArrayList<Double>(alpha);
+			for (int z : cz)
+				ctheta.set(z, ctheta.get(z) + 1);
+			for (int z : cz_M)
+				ctheta.set(z, ctheta.get(z) + 1);
+			double s = DataOps.sum(ctheta);
+			for (int k = 0; k < NTopic; k++)
+				ctheta.set(k, ctheta.get(k) / s);
+
+			for (int k = 0; k < cw.size(); k++) {
+				int curw = cw.get(k);
+				int curz = cz.get(k);
+				res += Math.log(ctheta.get(curz) * phi.get(curz).get(curw));
+			}
+			for (int k = 0; k < cw_M.size(); k++) {
+				int curw = cw_M.get(k);
+				int curz = cz_M.get(k);
+				res += Math.log(ctheta.get(curz) * phi_M.get(curz).get(curw));
+			}
+			res /= Math.pow(cw.size() + cw_M.size(), 1);
+		}
+		// System.out.println(res);
+		return res;
+		// return basic.Vector.dot(theta.get(i), theta.get(j));
 	}
 
 	public double getScore(int i, int j) {
@@ -382,16 +436,17 @@ public class JUM extends UserMapTask {
 
 	@Override
 	public void evaluate() {
-		
-		for (int i=0;i<10;i++){
-			int rid=random.nextInt(data.getSizeWeibo());
-			System.out.println(getScore(i, data.getTruth().get(i))+"\t"+getScore(i, rid));
-			int did=drid.get(i),wid=wrid.get(data.getTruth().get(i));
-			System.out.println(did+"\t"+theta.get(did));
-			System.out.println(wid+"\t"+theta.get(wid));
-			System.out.println(rid+"\t"+theta.get(wrid.get(rid)));
+
+		for (int i = 0; i < 10; i++) {
+			int rid = random.nextInt(data.getSizeWeibo());
+			// System.out.println(getScore(i,
+			// data.getTruth().get(i))+"\t"+getScore(i, rid));
+			int did = drid.get(i), wid = wrid.get(data.getTruth().get(i));
+			// System.out.println(did+"\t"+theta.get(did));
+			// System.out.println(wid+"\t"+theta.get(wid));
+			// System.out.println(rid+"\t"+theta.get(wrid.get(rid)));
 		}
-		
+
 		result = new HashMap<Integer, Integer>();
 		final LinkedList<Integer> Q = new LinkedList<Integer>();
 		cands = new ArrayList<ArrayList<Pair<Integer, Double>>>();
@@ -459,10 +514,10 @@ public class JUM extends UserMapTask {
 						}
 						if (res == -1)
 							res = cur.get(0).getFirst();
-//						System.out.println(i + "\t"
-//								+ getScore(i, data.getTruth().get(i)) + "\t"
-//								+ pos + "\t" + data.getTruth().get(i) + "\t"
-//								+ res + "\t" + cur.get(0).getSecond());
+						System.out.println(i + "\t"
+								+ getScore(i, data.getTruth().get(i)) + "\t"
+								+ pos + "\t" + data.getTruth().get(i) + "\t"
+								+ res + "\t" + cur.get(0).getSecond());
 
 						ArrayList<Pair<Integer, Double>> tcur = new ArrayList<Pair<Integer, Double>>();
 						for (int q = 0; q < TOPN; q++)
@@ -495,7 +550,6 @@ public class JUM extends UserMapTask {
 					if (f)
 						hit++;
 				}
-//			System.out.println("Precision @ " + i + " : " + hit / (tcnt + 0.0));
 		}
 		super.evaluate();
 	}

@@ -37,7 +37,6 @@ public class RFWrapper extends UserMapTask {
 		feature.setSize(NFeature);
 		feature.setResult(v);
 		int ed = basic.algorithm.StringAlg.EditDistance(
-
 		data.getDouban_username(i), data.getWeibo_username(j));
 		feature.setValue(0, ed);
 		feature.setValue(
@@ -112,7 +111,6 @@ public class RFWrapper extends UserMapTask {
 							result.put(i, res);
 						}
 					}
-
 				}
 			};
 			worker[i].start();
