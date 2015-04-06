@@ -61,6 +61,7 @@ public class DataSet {
 	public LinkedList<Integer[]> getDouban_usermovie(int i) {
 		return douban_usermovie.get(i);
 	}
+
 	public HashSet<Integer> getDouban_usermovie_set(int i) {
 		return douban_usermovie_set.get(i);
 	}
@@ -86,13 +87,15 @@ public class DataSet {
 			douban_friend = new LinkedList<LinkedList<Integer>>();
 			douban_usermovie = new ArrayList<LinkedList<Integer[]>>();
 			douban_usermovie_set = new ArrayList<HashSet<Integer>>();
-			HashMap<String, String> namemap = FileOps.LoadDictionSS(dir
+			LinkedList<String> namemap = FileOps.LoadFilebyLine(dir
 					+ "douban_username");
-			for (String s : namemap.keySet()) {
-				Long uid = Long.valueOf(s);
+			
+			for (String s : namemap) {
+				String[] sep=s.split("\t");
+				Long uid = Long.valueOf(sep[0]);
 				douban_rid.put(uid, douban_user.size());
 				douban_user.add(uid);
-				douban_username.add(namemap.get(s));
+				douban_username.add(sep[1]);
 				douban_friend.add(new LinkedList<Integer>());
 				douban_usermovie.add(new LinkedList<Integer[]>());
 				douban_usermovie_set.add(new HashSet<Integer>());
@@ -132,11 +135,10 @@ public class DataSet {
 			weibo_rid = new HashMap<Long, Integer>();
 			weibo_friend = new LinkedList<LinkedList<Integer>>();
 			weibo_weibo = new LinkedList<LinkedList<String>>();
-			LinkedList<String> namemap=FileOps.LoadFilebyLine(dir+"weibo_username");
-//			HashMap<String, String> namemap = FileOps.LoadDictionSS(dir
-//					+ "weibo_username");
+			LinkedList<String> namemap = FileOps.LoadFilebyLine(dir
+					+ "weibo_username");
 			for (String s : namemap) {
-				String []sep=s.split("\t");
+				String[] sep = s.split("\t");
 				Long uid = Long.valueOf(sep[0]);
 				weibo_rid.put(uid, weibo_user.size());
 				weibo_user.add(uid);

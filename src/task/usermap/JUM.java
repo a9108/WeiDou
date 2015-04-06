@@ -42,12 +42,13 @@ public class JUM extends UserMapTask {
 		ArrayList<Integer> curw = new ArrayList<Integer>();
 		ArrayList<Integer> curz = new ArrayList<Integer>();
 		if (wid != -1)
-			for (String s : data.getWeibo_weibo(wid))
+			for (String s : data.getWeibo_weibo(wid)){
 				for (String seg : s.split("\t"))
 					if (dict.containsKey(seg)) {
 						curw.add(dict.get(seg));
 						curz.add(random.nextInt(NTopic));
 					}
+			}
 
 		ArrayList<Integer> curw_M = new ArrayList<Integer>();
 		ArrayList<Integer> curz_M = new ArrayList<Integer>();
@@ -154,15 +155,6 @@ public class JUM extends UserMapTask {
 
 		savePhi();
 		saveTheta();
-
-//		LinkedList<String> jum = new LinkedList<String>();
-//		for (int i = 0; i < data.getSizeDouban(); i++) {
-//			StringBuilder sb = new StringBuilder();
-//			for (int j = 0; j < data.getSizeWeibo(); j++)
-//				sb.append(getScore(i, j) + "\t");
-//			jum.add(sb.toString());
-//		}
-//		FileOps.SaveFile(Config.getValue("WorkDir") + "jum.model", jum);
 	}
 
 	private void updatePhi() {

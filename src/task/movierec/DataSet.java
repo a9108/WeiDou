@@ -28,9 +28,9 @@ public class DataSet {
 	private HashMap<Integer, Integer> links;
 
 	public DataSet() {
-		random=new Random(0);
+		random = new Random(0);
 	}
-	
+
 	public int getSizeMovie() {
 		return NMovie;
 	}
@@ -62,8 +62,9 @@ public class DataSet {
 	public LinkedList<Integer[]> getDouban_usermovie(int i) {
 		return douban_usermovie.get(i);
 	}
+
 	public HashSet<Integer> getDouban_usermovie_set(int i) {
-		return douban_usermovie_set.get(i);
+		return new HashSet<Integer>(douban_usermovie_set.get(i));
 	}
 
 	public LinkedList<Integer> getDouban_friends(int i) {
@@ -87,13 +88,17 @@ public class DataSet {
 			douban_friend = new LinkedList<LinkedList<Integer>>();
 			douban_usermovie = new ArrayList<LinkedList<Integer[]>>();
 			douban_usermovie_set = new ArrayList<HashSet<Integer>>();
-			HashMap<String, String> namemap = FileOps.LoadDictionSS(dir
+			// HashMap<String, String> namemap = FileOps.LoadDictionSS(dir
+			// + "douban_username");
+			LinkedList<String> namemap = FileOps.LoadFilebyLine(dir
 					+ "douban_username");
-			for (String s : namemap.keySet()) {
-				Long uid = Long.valueOf(s);
+
+			for (String s : namemap) {
+				String[] sep = s.split("\t");
+				Long uid = Long.valueOf(sep[0]);
 				douban_rid.put(uid, douban_user.size());
 				douban_user.add(uid);
-				douban_username.add(namemap.get(s));
+				douban_username.add(sep[1]);
 				douban_friend.add(new LinkedList<Integer>());
 				douban_usermovie.add(new LinkedList<Integer[]>());
 				douban_usermovie_set.add(new HashSet<Integer>());
@@ -114,17 +119,16 @@ public class DataSet {
 				moviename.add(line.split("\t")[2]);
 				NMovie++;
 			}
-			
+
 			for (String line : FileOps.LoadFilebyLine(dir
 					+ "douban_userwatched")) {
 				String[] sep = line.split("\t");
-				if (Integer.valueOf(sep[2])==0) continue;
-				int curid=douban_rid.get(Long.valueOf(sep[0]));
+				// if (Integer.valueOf(sep[2])==0) continue;
+				int curid = douban_rid.get(Long.valueOf(sep[0]));
 				douban_usermovie.get(curid).add(
 						new Integer[] { Integer.valueOf(sep[1]),
 								Integer.valueOf(sep[2]) });
-				douban_usermovie_set.get(curid)
-						.add(Integer.valueOf(sep[1]));
+				douban_usermovie_set.get(curid).add(Integer.valueOf(sep[1]));
 			}
 			System.out.println("Douban Movie Loaded");
 		}
@@ -135,11 +139,12 @@ public class DataSet {
 			weibo_rid = new HashMap<Long, Integer>();
 			weibo_friend = new LinkedList<LinkedList<Integer>>();
 			weibo_weibo = new LinkedList<LinkedList<String>>();
-			LinkedList<String> namemap=FileOps.LoadFilebyLine(dir+"weibo_username");
-//			HashMap<String, String> namemap = FileOps.LoadDictionSS(dir
-//					+ "weibo_username");
+			LinkedList<String> namemap = FileOps.LoadFilebyLine(dir
+					+ "weibo_username");
+			// HashMap<String, String> namemap = FileOps.LoadDictionSS(dir
+			// + "weibo_username");
 			for (String s : namemap) {
-				String []sep=s.split("\t");
+				String[] sep = s.split("\t");
 				Long uid = Long.valueOf(sep[0]);
 				weibo_rid.put(uid, weibo_user.size());
 				weibo_user.add(uid);

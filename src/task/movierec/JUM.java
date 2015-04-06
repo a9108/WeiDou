@@ -5,8 +5,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Random;
+
+import javax.swing.plaf.multi.MultiButtonUI;
 
 import basic.Config;
 import basic.DataOps;
@@ -48,12 +51,15 @@ public class JUM extends RankingTask {
 			theta.add(Formats.doubleArrayLoader(line, "\t"));
 
 		model = new MatrixFactorization(data.getSizeDouban(),
-				data.getSizeMovie(), 10, 50, 1e-2, 1e-1,MatrixFactorization.SIGMOID);
-		
+				data.getSizeMovie(), 10, 50, 1e-2, 1e-1,
+				MatrixFactorization.SIGMOID);
+
+//		showSimAnalyze_Jacc();
+
 		for (int i = 0; i < data.getSizeDouban(); i++) {
 			ArrayList<Double> topics = theta.get(data.getLinks().get(i));
 			for (int j = 0; j < topics.size(); j++)
-				model.addUserFeature(i, j, topics.get(j)*10);
+				model.addUserFeature(i, j, topics.get(j) * 10);
 		}
 
 		for (int i = 0; i < data.getSizeDouban(); i++)
@@ -67,7 +73,6 @@ public class JUM extends RankingTask {
 			saveModel();
 			showSimAnalyze();
 		}
-
 	}
 
 	private void saveModel() {
@@ -80,10 +85,11 @@ public class JUM extends RankingTask {
 			outdata.add(sb.toString());
 		}
 		FileOps.SaveFile(Config.getValue("WorkDir") + "mf.model", outdata);
-		
+
 		outdata = new LinkedList<String>();
 		for (int i = 0; i < data.getSizeDouban(); i++) {
-			Double[] vec = (Double[])(theta.get(data.getLinks().get(i)).toArray(new Double[0]));
+			Double[] vec = (Double[]) (theta.get(data.getLinks().get(i))
+					.toArray(new Double[0]));
 			StringBuilder sb = new StringBuilder();
 			for (double v : vec)
 				sb.append(v + "\t");
@@ -97,7 +103,7 @@ public class JUM extends RankingTask {
 		LinkedList<String> mf = new LinkedList<String>();
 		for (int i : data.getLinks().keySet())
 			for (int j : data.getLinks().keySet())
-				if (i < j&&random.nextDouble()<0.01&&lda.size()<100000) {
+				if (i < j && random.nextDouble() < 0.01 && lda.size() < 100000) {
 					double sim11 = Vector.CosineSimilarity(
 							model.getEmbedding_User(i),
 							model.getEmbedding_User(j));
@@ -119,6 +125,25 @@ public class JUM extends RankingTask {
 				}
 		FileOps.SaveFile(Config.getValue("WorkDir") + "lda.usersim", lda);
 		FileOps.SaveFile(Config.getValue("WorkDir") + "mf.usersim", mf);
+	}
+
+	private void showSimAnalyze_Jacc() {
+		LinkedList<String> outdata = new LinkedList<String>();
+		for (int q = 0; q < 1000000; q++) {
+			int i = random.nextInt(data.getSizeDouban());
+			int j = random.nextInt(data.getSizeDouban());
+			double lda = Vector.CosineSimilarity(
+					theta.get(data.getLinks().get(i)),
+					theta.get(data.getLinks().get(j)));
+			HashSet<Integer> mi = data.getDouban_usermovie_set(i);
+			HashSet<Integer> mj = data.getDouban_usermovie_set(j);
+			int si = mi.size();
+			mi.retainAll(mj);
+			
+			double jacc = mi.size() / (si + mj.size() - mi.size() + 0.0);
+			outdata.add(lda + "\t" + jacc);
+		}
+		FileOps.SaveFile(Config.getValue("WorkDir") + "usersim", outdata);
 	}
 
 	private void trainLDA(int round) {
@@ -302,5 +327,4 @@ public class JUM extends RankingTask {
 		}
 		FileOps.SaveFile(Config.getValue("WorkDir") + "topic_phi", outdata);
 	}
-
 }

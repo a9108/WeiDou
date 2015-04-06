@@ -26,7 +26,10 @@ public abstract class RankingTask {
 		test = new ArrayList<LinkedList<Integer>>();
 
 		for (int i = 0; i < data.getSizeDouban(); i++) {
-			double curR = 1-random.nextInt(100)/(0.0+data.getDouban_usermovie_set(i).size());// random.nextDouble()<0.3?.8:ratio;
+			double curR = 1 - random.nextInt(100)
+					/ (0.0 + data.getDouban_usermovie_set(i).size());// random.nextDouble()<0.3?.8:ratio;
+//			if (random.nextDouble() < ratio)
+//				curR = 0;
 			LinkedList<Integer> curTest = new LinkedList<Integer>();
 			LinkedList<Integer> curTrain = new LinkedList<Integer>();
 
@@ -36,7 +39,7 @@ public abstract class RankingTask {
 				else
 					curTrain.add(item);
 			}
-//			System.out.println(curTrain.size()+"\t"+curTest.size());
+			// System.out.println(curTrain.size()+"\t"+curTest.size());
 			train.add(curTrain);
 			test.add(curTest);
 		}
