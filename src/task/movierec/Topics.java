@@ -31,7 +31,7 @@ public class Topics extends RankingTask {
 	public void train() {
 		theta = new ArrayList<ArrayList<Double>>();
 		for (String line : FileOps.LoadFilebyLine(Config.getValue("WorkDir")
-				+ "jum.theta"))
+				+ "mmtm.theta"))
 			theta.add(Formats.doubleArrayLoader(line, "\t"));
 		HashMap<String, Integer> movieId = new HashMap<String, Integer>();
 		for (String line : FileOps.LoadFilebyLine(Config.getValue("SelectDir")
@@ -41,7 +41,7 @@ public class Topics extends RankingTask {
 		}
 		ArrayList<String> phis = new ArrayList<String>(
 				FileOps.LoadFilebyLine(Config.getValue("WorkDir")
-						+ "jum.topic_phi.full"));
+						+ "mmtm.topic_phi.full"));
 		phi = new ArrayList<ArrayList<Double>>();
 		for (int i = 1; i < phis.size(); i += 2) {
 			ArrayList<Double> curPhi = new ArrayList<Double>();

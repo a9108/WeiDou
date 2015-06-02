@@ -5,4 +5,4 @@ DataDir		D:\data\
 SelectDir	D:\data\select\
 SelectDir	D:\data\small\
 WorkDir		D:\data\largework\
-WorkDir		D:\data\work\
+WorkDir	D:\data\work\

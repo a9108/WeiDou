@@ -67,7 +67,6 @@ public class JUM extends UserMapTask {
 			drid.put(did, this.did.size());
 		this.wid.add(wid);
 		this.did.add(did);
-
 	}
 
 	private void initParams() {
@@ -334,7 +333,7 @@ public class JUM extends UserMapTask {
 				sb.append(v + "\t");
 			outdata.add(sb.toString());
 		}
-		FileOps.SaveFile(Config.getValue("WorkDir") + "jum.theta", outdata);
+		FileOps.SaveFile(Config.getValue("WorkDir") + "mmtm.theta", outdata);
 	}
 
 	private void savePhi() {
@@ -382,8 +381,8 @@ public class JUM extends UserMapTask {
 			fulldata.add(sbf.toString());
 
 		}
-		FileOps.SaveFile(Config.getValue("WorkDir") + "jum.topic_phi", outdata);
-		FileOps.SaveFile(Config.getValue("WorkDir") + "jum.topic_phi.full",
+		FileOps.SaveFile(Config.getValue("WorkDir") + "mmtm.topic_phi", outdata);
+		FileOps.SaveFile(Config.getValue("WorkDir") + "mmtm.topic_phi.full",
 				fulldata);
 	}
 

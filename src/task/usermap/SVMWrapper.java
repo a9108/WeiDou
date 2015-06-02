@@ -11,8 +11,9 @@ import basic.Config;
 import basic.FileOps;
 import basic.StringOps;
 import basic.algorithm.Classification;
-import basic.algorithm.RandomForest;
+import basic.algorithm.RandomTree;
 import basic.algorithm.WinSVM;
+import basic.format.DenseFeature;
 import basic.format.Feature;
 
 public class SVMWrapper extends UserMapTask {
@@ -35,7 +36,7 @@ public class SVMWrapper extends UserMapTask {
 	}
 
 	private Feature genFeature(int i, int j, double v) {
-		Feature feature = new Feature();
+		Feature feature = new DenseFeature();
 		feature.setSize(NFeature);
 		feature.setResult(v);
 		int ed = basic.algorithm.StringAlg.EditDistance(
@@ -54,7 +55,7 @@ public class SVMWrapper extends UserMapTask {
 	private Classification model;
 
 	private void Train() {
-		model = new WinSVM("D:\\cxz\\tools\\svm\\", "-b 1 -t 3","-b 1 -q");
+		model = new WinSVM("D:\\cxz\\tools\\svm\\", "-b 1 -t 3", "-b 1 -q");
 		model.setNFeature(NFeature);
 		for (int id : data.getTruth().keySet()) {
 			model.addTrain(genFeature(id, data.getTruth().get(id), 1));
@@ -89,13 +90,12 @@ public class SVMWrapper extends UserMapTask {
 						}
 						int res = -1;
 						double best = -1;
-						LinkedList<Feature> features=new LinkedList<Feature>();
-						for (int j=0;j<data.getSizeWeibo();j++)
-							features.add(genFeature(i, j, 0));
-						ArrayList<Double> score=model.predict(features);
-						System.out.println(i);
+						LinkedList<Feature> features = new LinkedList<Feature>();
 						for (int j = 0; j < data.getSizeWeibo(); j++)
-						{
+							features.add(genFeature(i, j, 0));
+						ArrayList<Double> score = model.predict(features);
+						System.out.println(i);
+						for (int j = 0; j < data.getSizeWeibo(); j++) {
 							double curs = score.get(j);
 							if (curs > best) {
 								best = curs;

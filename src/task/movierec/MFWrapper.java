@@ -11,7 +11,7 @@ public class MFWrapper extends RankingTask {
 	public void train() {
 		random=new Random(0);
 		model = new MatrixFactorization(data.getSizeDouban(),
-				data.getSizeMovie(), 10, 0, 1e-1, 1e-4,MatrixFactorization.SIGMOID);
+				data.getSizeMovie(), 10, 0, 1e-1, 0, 1e-4,MatrixFactorization.SIGMOID);
 		
 		for (int i = 0; i < data.getSizeDouban(); i++)
 			for (int item : getTrain().get(i)) {

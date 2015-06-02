@@ -25,7 +25,7 @@ public class DoubanMF extends UserMapTask {
 		testsetT = new ArrayList<Pair<Integer, Integer>>();
 		testsetF = new ArrayList<Pair<Integer, Integer>>();
 		mf = new MatrixFactorization(data.getSizeDouban(), data.getSizeMovie(),
-				K, 0, 1e-2, 1e-2,MatrixFactorization.SIGMOID);
+				K, 0, 1e-2, 0,1e-2,MatrixFactorization.SIGMOID);
 		for (int i = 0; i < data.getSizeDouban(); i++)
 			for (Integer[] mlog : data.getDouban_usermovie(i)) {
 				if (random.nextDouble() < 0.8) {

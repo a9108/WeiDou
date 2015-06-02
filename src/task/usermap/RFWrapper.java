@@ -10,7 +10,8 @@ import javax.security.auth.kerberos.KerberosKey;
 import basic.Config;
 import basic.FileOps;
 import basic.StringOps;
-import basic.algorithm.RandomForest;
+import basic.algorithm.RandomTree;
+import basic.format.DenseFeature;
 import basic.format.Feature;
 
 public class RFWrapper extends UserMapTask {
@@ -33,11 +34,11 @@ public class RFWrapper extends UserMapTask {
 	}
 
 	private Feature genFeature(int i, int j, double v) {
-		Feature feature = new Feature();
+		Feature feature = new DenseFeature();
 		feature.setSize(NFeature);
 		feature.setResult(v);
 		int ed = basic.algorithm.StringAlg.EditDistance(
-		data.getDouban_username(i), data.getWeibo_username(j));
+				data.getDouban_username(i), data.getWeibo_username(j));
 		feature.setValue(0, ed);
 		feature.setValue(
 				1,
@@ -48,12 +49,12 @@ public class RFWrapper extends UserMapTask {
 		return feature;
 	}
 
-	private LinkedList<RandomForest> rf;
+	private LinkedList<RandomTree> rf;
 
 	private void Train() {
-		rf = new LinkedList<RandomForest>();
+		rf = new LinkedList<RandomTree>();
 		for (int i = 0; i < 2; i++) {
-			RandomForest cur = new RandomForest(10, 100, 1);
+			RandomTree cur = new RandomTree(10, 100, 1, 1);
 			cur.setNFeature(NFeature);
 			for (int id : data.getTruth().keySet())
 				if (!data.getTrain().containsKey(id)) {
@@ -69,7 +70,7 @@ public class RFWrapper extends UserMapTask {
 	private double getScore(int i, int j) {
 		double s = 0;
 		Feature f = genFeature(i, j, 0);
-		for (RandomForest cur : rf)
+		for (RandomTree cur : rf)
 			s += cur.predict(f);
 		return s / rf.size();
 	}

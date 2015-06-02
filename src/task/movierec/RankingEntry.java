@@ -16,7 +16,7 @@ public class RankingEntry {
 		RankingTask.data=new DataSet();
 		RankingTask.data.load(Config.getValue("SelectDir"));
 		
-		RankingTask task=new Topics();
+		RankingTask task=new JUM();
 		task.genTrain(0.3);
 		task.train();
 		task.evaluate();

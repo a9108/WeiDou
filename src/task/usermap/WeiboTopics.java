@@ -13,7 +13,7 @@ import basic.FileOps;
 import basic.format.Pair;
 
 public class WeiboTopics extends UserMapTask {
-	private static int NTopic = 30;
+	private static int NTopic = 20;
 	private static int NWords = 1000;
 
 	private ArrayList<ArrayList<Integer>> w, z;

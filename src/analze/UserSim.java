@@ -12,12 +12,14 @@ import javax.security.auth.kerberos.KerberosKey;
 import basic.Config;
 import basic.DataOps;
 import basic.FileOps;
+import basic.Vector;
 import basic.format.Pair;
 
 public class UserSim {
 
 	private static HashMap<String, Integer[]> weibo_bow;
 	private static HashMap<String, LinkedList<Integer>> movies;
+	private static LinkedList<LinkedList<Double>> weibo_theta;
 
 	private static double getWeiboSim(String A, String B) {
 		Integer[] ta = weibo_bow.get(A), tb = weibo_bow.get(B);
@@ -28,6 +30,13 @@ public class UserSim {
 			sb += tb[i];
 		}
 		return sum / (sa + sb + 0.0);
+	}
+	private static double getTopicSim(int i,int j) {
+		double s=0;
+		for (int q=0;q<weibo_theta.get(i).size();q++)
+			s+=Math.abs(weibo_theta.get(i).get(q)-weibo_theta.get(j).get(q));
+		return s;
+//		return Vector.dist(weibo_theta.get(i), weibo_theta.get(j));
 	}
 
 	private static double getDoubanSim(String A, String B) {
@@ -56,6 +65,15 @@ public class UserSim {
 			if (!weibos.containsKey(wid))
 				weibos.put(wid, new StringBuilder());
 			weibos.get(wid).append(content);
+		}
+
+		weibo_theta=new LinkedList<LinkedList<Double>>();
+		for (String s : FileOps.LoadFilebyLine(Config.getValue("WorkDir")
+				+ "weibo.topics.theta")) {
+			LinkedList<Double> cur=new LinkedList<Double>();
+			for (String item:s.split("\t"))
+				cur.add(Double.valueOf(item));
+			weibo_theta.add(cur);
 		}
 
 		for (String s : FileOps.LoadFilebyLine(Config.getValue("SelectDir")
@@ -110,12 +128,13 @@ public class UserSim {
 
 		LinkedList<String> outdata = new LinkedList<String>();
 		Random random = new Random();
-		for (int q = 0; q < 1000000; q++) {
+		for (int q = 0; q < 5000000; q++) {
 			int i = random.nextInt(users.size());
 			int j = random.nextInt(users.size());
 			String[] nameA = users.get(i).split("\t");
 			String[] nameB = users.get(j).split("\t");
 			double sw = getWeiboSim(nameA[2], nameB[2]);
+			sw=getTopicSim(i,j);
 			double sd = getDoubanSim(nameA[1], nameB[1]);
 			outdata.add(sw + "\t" + sd);
 		}
